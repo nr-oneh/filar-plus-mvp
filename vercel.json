@@ -1,0 +1,9 @@
+{
+  "buildCommand": "npx prisma generate && next build",
+  "crons": [
+    {
+      "path": "/api/cron/inactivity",
+      "schedule": "0 16 * * *"
+    }
+  ]
+}

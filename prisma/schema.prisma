@@ -1,0 +1,146 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id             String          @id @default(cuid())
+  email          String          @unique
+  name           String
+  password       String
+  role           Role            @default(PATIENT)
+  diagnosis      Diagnosis?
+  startDate      DateTime        @default(now())
+  activeWeek     Int             @default(1)
+  fontSize       FontSize        @default(LARGE)
+  subtitles      Boolean         @default(true)
+  onboardingDone Boolean         @default(false)
+  subscription   Subscription?
+  progress       VideoProgress[]
+  wellnessLogs   WellnessLog[]
+  badges         UserBadge[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model Video {
+  id          String          @id @default(cuid())
+  title       String
+  description String
+  category    Category
+  week        Int
+  specialist  String
+  duration    Int
+  bunnyUrl    String
+  subtitleUrl String?
+  status      VideoStatus     @default(DRAFT)
+  order       Int             @default(0)
+  progress    VideoProgress[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+model VideoProgress {
+  id             String   @id @default(cuid())
+  userId         String
+  videoId        String
+  secondsWatched Int      @default(0)
+  completed      Boolean  @default(false)
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video          Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  updatedAt      DateTime @updatedAt
+
+  @@unique([userId, videoId])
+}
+
+model WellnessLog {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime @default(now())
+  painLevel Int
+  energy    Int
+  notes     String?
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Subscription {
+  id               String    @id @default(cuid())
+  userId           String    @unique
+  stripeCustomerId String
+  stripeSubId      String?
+  type             SubType
+  status           SubStatus
+  currentPeriodEnd DateTime?
+  gracePeriodEnd   DateTime?
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model Badge {
+  id          String      @id @default(cuid())
+  key         String      @unique
+  name        String
+  description String
+  emoji       String
+  users       UserBadge[]
+}
+
+model UserBadge {
+  id       String   @id @default(cuid())
+  userId   String
+  badgeId  String
+  earnedAt DateTime @default(now())
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge    Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeId])
+}
+
+enum Role {
+  PATIENT
+  SPECIALIST
+  ADMIN
+}
+
+enum Diagnosis {
+  FIBROMIALGIA
+  LUPUS
+  ARTRITIS
+  OTRO
+}
+
+enum Category {
+  EJERCICIO
+  NUTRICION
+  COCINA
+  BIENESTAR
+  EDUCACION
+}
+
+enum VideoStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum SubType {
+  MONTHLY
+  ONE_TIME
+}
+
+enum SubStatus {
+  ACTIVE
+  CANCELLED
+  PAST_DUE
+}
+
+enum FontSize {
+  NORMAL
+  LARGE
+  XLARGE
+}
