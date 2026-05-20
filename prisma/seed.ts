@@ -34,7 +34,7 @@ async function main() {
   const videos = await Promise.all(videosSeed.map((data) => prisma.video.create({ data })))
 
   const adminHash = await bcrypt.hash("Admin123!", 10)
-  const patientHash = await bcrypt.hash("Paciente123", 10)
+  const patientHash = await bcrypt.hash("Demo123", 10)
 
   await prisma.user.create({
     data: {
@@ -109,7 +109,7 @@ async function main() {
 
   console.log("✅ Seed completado")
   console.log("   admin@filar6.com   / Admin123!")
-  console.log("   demo@filar6.com    / Paciente123")
+  console.log("   demo@filar6.com    / Demo123")
 }
 
 main()
