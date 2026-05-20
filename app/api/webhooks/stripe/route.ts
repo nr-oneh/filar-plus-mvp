@@ -1,11 +1,17 @@
 import { NextRequest, NextResponse } from "next/server"
-import { stripe } from "@/lib/stripe"
+import Stripe from "stripe"
 import { prisma } from "@/lib/prisma"
 import { sendWelcomeEmail, sendPaymentFailedEmail } from "@/lib/resend"
 import bcrypt from "bcryptjs"
 import crypto from "crypto"
 
+export const dynamic = "force-dynamic"
+
 export async function POST(req: NextRequest) {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: "2025-02-24.acacia",
+  })
+
   const body = await req.text()
   const sig = req.headers.get("stripe-signature")
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
@@ -14,7 +20,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing webhook secret" }, { status: 400 })
   }
 
-  let event: ReturnType<typeof stripe.webhooks.constructEvent>
+  let event: Stripe.Event
   try {
     event = stripe.webhooks.constructEvent(body, sig, webhookSecret)
   } catch {
