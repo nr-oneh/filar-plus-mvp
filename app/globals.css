@@ -1,39 +1,45 @@
 @import "tailwindcss";
 
 @theme {
-  --color-cream: #f5f0eb;
-  --color-teal: #2a9d8f;
-  --color-teal-light: #4abfb0;
-  --color-teal-dark: #1a7a6e;
-  --color-navy: #1b2a4a;
-  --color-coral: #e76f51;
-  --color-gold: #e9c46a;
-  --color-gray: #8a8fa8;
-  --color-gray-light: #f0ede8;
+  --color-dark:        #141414;
+  --color-surface:     #1c1c1c;
+  --color-surface-2:   #242424;
+  --color-border:      rgba(255,255,255,0.08);
+  --color-teal:        #2a9d8f;
+  --color-teal-light:  #3bbcad;
+  --color-teal-dark:   #1a7a6e;
+  --color-coral:       #e76f51;
+  --color-gold:        #e9c46a;
+  --color-muted:       rgba(255,255,255,0.45);
+  --color-subtle:      rgba(255,255,255,0.12);
 
   --font-heading: var(--font-playfair);
-  --font-sans: var(--font-dm-sans);
+  --font-sans:    var(--font-dm-sans);
 }
 
 @layer base {
   html {
-    background-color: #f5f0eb;
-    color: #1b2a4a;
+    background-color: #141414;
+    color: #ffffff;
     font-size: 18px;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  * {
-    box-sizing: border-box;
-  }
+  * { box-sizing: border-box; }
 
-  h1,
-  h2,
-  h3 {
+  h1, h2, h3 {
     font-family: var(--font-playfair), Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.02em;
   }
 
   body {
     font-family: var(--font-dm-sans), system-ui, sans-serif;
+    background: #141414;
   }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
 }
